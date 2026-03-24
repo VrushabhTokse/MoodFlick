@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}MoodFlick – Detect Your Emotion, Discover Your Movie{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-text">
+    <div class="hero-badge">✨ AI-Powered Movie Discovery</div>
+    <h1 class="hero-title">
+      Movies That<br/>
+      <span class="gradient-text">Match Your Mood</span>
+    </h1>
+    <p class="hero-subtitle">
+      Let your face speak. Our AI reads your emotion in real‑time and hand‑picks the
+      perfect movie for how you feel <em>right now</em>.
+    </p>
+    <div class="hero-cta">
+      <a href="#detector" class="btn btn-primary btn-large">
+        <span>🎭</span> Detect My Mood
+      </a>
+      <a href="{{ url_for('recommend', emotion='happy') }}" class="btn btn-ghost btn-large">
+        <span>🍿</span> Browse Films
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">7</span><span class="stat-label">Emotions</span></div>
+      <div class="stat-sep">·</div>
+      <div class="stat"><span class="stat-num">1000+</span><span class="stat-label">Movies</span></div>
+      <div class="stat-sep">·</div>
+      <div class="stat"><span class="stat-num">Real‑time</span><span class="stat-label">Detection</span></div>
+    </div>
+  </div>
+
+  <!-- Emotion Pills -->
+  <div class="emotion-pills-wrap">
+    <div class="emotion-pills">
+      {% for key, meta in emotion_meta.items() %}
+      <a href="{{ url_for('recommend', emotion=key) }}" class="emotion-pill" data-emotion="{{ key }}"
+         style="--em-color: {{ meta.color }}">
+        <span class="pill-icon">{{ meta.icon }}</span>
+        <span class="pill-label">{{ meta.label }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Detector Section -->
+<section class="detector-section" id="detector">
+  <div class="section-header">
+    <h2 class="section-title">🎯 Live Emotion Detector</h2>
+    <p class="section-sub">Position your face in frame and click the button below.</p>
+  </div>
+
+  <div class="detector-card glass-card">
+    <!-- Webcam preview -->
+    <div class="camera-wrap" id="camera-wrap">
+      <video id="webcam" autoplay playsinline muted></video>
+      <canvas id="snapshot-canvas" style="display:none;"></canvas>
+
+      <!-- Overlay states -->
+      <div class="cam-overlay" id="cam-overlay-idle">
+        <div class="cam-icon">📷</div>
+        <p>Camera will activate when you click below</p>
+      </div>
+      <div class="cam-overlay cam-overlay-hidden" id="cam-overlay-countdown">
+        <div class="countdown-ring">
+          <span id="countdown-num">3</span>
+        </div>
+      </div>
+      <div class="cam-overlay cam-overlay-hidden" id="cam-overlay-processing">
+        <div class="processing-ring"></div>
+        <p>Analysing your expression…</p>
+      </div>
+    </div>
+
+    <!-- Emotion result badge -->
+    <div class="emotion-result hidden" id="emotion-result">
+      <div class="result-icon" id="result-icon">😊</div>
+      <div class="result-label" id="result-label">Happy</div>
+      <div class="result-tip" id="result-tip"></div>
+      <div class="result-confidence">
+        <div class="confidence-bar-track">
+          <div class="confidence-bar-fill" id="confidence-bar"></div>
+        </div>
+        <span id="confidence-pct">0%</span>
+      </div>
+      <div class="result-scores hidden" id="result-scores"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="detector-controls">
+      <button id="start-btn" class="btn btn-primary btn-xlarge" onclick="startDetection()">
+        <span>🎭</span> Detect My Mood
+      </button>
+      <button id="retry-btn" class="btn btn-ghost btn-xlarge hidden" onclick="retryDetection()">
+        <span>🔄</span> Try Again
+      </button>
+      <a id="go-movies-btn" class="btn btn-glow btn-xlarge hidden" href="#">
+        <span>🍿</span> Show My Movies
+      </a>
+    </div>
+
+    <p class="cam-note">
+      🔒 Your camera feed <strong>never leaves your device</strong>. Only a single snapshot is sent for analysis.
+    </p>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-section">
+  <div class="section-header">
+    <h2 class="section-title">⚙️ How It Works</h2>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card glass-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">📷</div>
+      <h3>Capture</h3>
+      <p>Your webcam captures a single snapshot of your face in real‑time.</p>
+    </div>
+    <div class="step-card glass-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">🧠</div>
+      <h3>Analyse</h3>
+      <p>Our ML model (FER / TensorFlow) classifies your expression into one of 7 emotions.</p>
+    </div>
+    <div class="step-card glass-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">🎬</div>
+      <h3>Recommend</h3>
+      <p>A curated list of movies perfectly tuned to your mood is instantly revealed.</p>
+    </div>
+    <div class="step-card glass-card">
+      <div class="step-num">04</div>
+      <div class="step-icon">📜</div>
+      <h3>Remember</h3>
+      <p>Logged-in users can track their emotion history and revisit past recommendations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Browse by Mood -->
+<section class="browse-section">
+  <div class="section-header">
+    <h2 class="section-title">🎭 Browse by Mood</h2>
+    <p class="section-sub">Already know how you feel? Jump straight to your picks.</p>
+  </div>
+  <div class="mood-grid">
+    {% for key, meta in emotion_meta.items() %}
+    <a href="{{ url_for('recommend', emotion=key) }}" class="mood-card glass-card"
+       style="--em-color: {{ meta.color }}">
+      <div class="mood-emoji">{{ meta.icon }}</div>
+      <div class="mood-name">{{ meta.label }}</div>
+      <div class="mood-arrow">→</div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+{% endblock %}

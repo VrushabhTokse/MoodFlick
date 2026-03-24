@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Databases
+emotions.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+.gemini/
+.agents/
+
+# Project Data
+# We keep movies_extended.json as it's the core database for the app to run

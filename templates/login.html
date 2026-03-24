@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Login – MoodFlick{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card glass-card">
+    <div class="auth-header">
+      <div class="auth-logo">🎬</div>
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Log in to MoodFlick to see your emotion history</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+      <div class="form-group">
+        <label for="username" class="form-label">Username</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="username" name="username" class="form-input"
+                 placeholder="Your username" required autocomplete="username"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="password" name="password" class="form-input"
+                 placeholder="Your password" required autocomplete="current-password"/>
+          <button type="button" class="toggle-pw" onclick="togglePassword('password')">👁️</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full btn-large">
+        🔐 Log In
+      </button>
+    </form>
+
+    <div class="auth-divider"><span>or</span></div>
+
+    <p class="auth-switch">
+      New here?
+      <a href="{{ url_for('register') }}" class="auth-link">Create a free account →</a>
+    </p>
+  </div>
+
+  <div class="auth-deco">
+    <div class="deco-pill" style="--em-color:#FFD700">😄 Happy</div>
+    <div class="deco-pill" style="--em-color:#4A9EFF">😢 Sad</div>
+    <div class="deco-pill" style="--em-color:#FF4136">😠 Angry</div>
+    <div class="deco-pill" style="--em-color:#9B59B6">😨 Fearful</div>
+    <div class="deco-pill" style="--em-color:#FF6B35">😮 Surprised</div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePassword(fieldId) {
+  const f = document.getElementById(fieldId);
+  f.type = f.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}

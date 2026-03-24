@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}MoodFlick – Emotion-Aware Movie Recommendations{% endblock %}</title>
+  <meta name="description" content="MoodFlick uses AI and facial emotion detection to recommend movies that match your current mood."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Custom Cursor Follower -->
+  <div class="cursor-follower" id="cursor-follower"></div>
+
+<!-- Animated background -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- Navigation -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="{{ url_for('index') }}" class="nav-logo">
+      <span class="logo-icon">🎬</span>
+      <span class="logo-text">Mood<span class="logo-accent">Flick</span></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">
+        <span class="nav-icon">🏠</span> Home
+      </a></li>
+      {% for em in ['happy','sad','angry','fear','neutral','disgust','surprise'] %}
+      {% endfor %}
+      <li><a href="{{ url_for('recommend', emotion='happy') }}" class="nav-link {% if request.endpoint == 'recommend' %}active{% endif %}">
+        <span class="nav-icon">🎭</span> Browse
+      </a></li>
+      {% if user %}
+        <li><a href="{{ url_for('history') }}" class="nav-link {% if request.endpoint == 'history' %}active{% endif %}">
+          <span class="nav-icon">📜</span> History
+        </a></li>
+        <li>
+          <a href="{{ url_for('logout') }}" class="nav-link nav-btn nav-btn-outline">Logout</a>
+        </li>
+        <li class="nav-user">
+          <span class="user-avatar">{{ user.username[0].upper() }}</span>
+          <span class="user-name">{{ user.username }}</span>
+        </li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>
+        <li><a href="{{ url_for('register') }}" class="nav-btn nav-btn-primary">Sign Up</a></li>
+      {% endif %}
+    </ul>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container" id="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+          <span class="flash-icon">
+            {% if category == 'success' %}✅
+            {% elif category == 'error' %}❌
+            {% elif category == 'warning' %}⚠️
+            {% else %}ℹ️{% endif %}
+          </span>
+          {{ message }}
+          <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- Main content -->
+<main class="main-content">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo-icon">🎬</span>
+      <strong>MoodFlick</strong>
+    </div>
+    <p class="footer-tagline">Powered by AI · Emotion Detection · Real-Time Recommendations</p>
+    <p class="footer-credit">MCA Project · Sant Gadge Baba Amravati University · 2025–2026</p>
+    <div class="footer-tech">
+      <span class="tech-badge">Python</span>
+      <span class="tech-badge">Flask</span>
+      <span class="tech-badge">OpenCV</span>
+      <span class="tech-badge">TensorFlow</span>
+      <span class="tech-badge">SQLite</span>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}{{ meta.label }} Mood Movies – MoodFlick{% endblock %}
+
+{% block extra_head %}
+<style>
+  :root {
+    --accent: {{ meta.color }};
+    --accent-glow: {{ meta.color }}55;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Emotion Header Banner -->
+<section class="recommend-hero" style="--em-color: {{ meta.color }}">
+  <div class="recommend-hero-inner">
+    <div class="em-badge-large">
+      <span class="em-icon-xl">{{ meta.icon }}</span>
+      <div>
+        <div class="em-badge-label">Detected Mood</div>
+        <div class="em-badge-name">{{ meta.label }}</div>
+      </div>
+    </div>
+    <p class="em-tip">{{ meta.tip }}</p>
+    <a href="{{ url_for('index') }}#detector" class="btn btn-ghost">🎭 Detect Again</a>
+  </div>
+  <div class="em-glow-bg" style="background: radial-gradient(ellipse at center, {{ meta.color }}22 0%, transparent 70%);"></div>
+</section>
+
+<!-- Movie Grid -->
+<section class="movies-section">
+  <div class="section-header">
+    <h2 class="section-title">🍿 Movies for You</h2>
+    <p class="section-sub">{{ movies | length }} handpicked films matching your <strong>{{ meta.label }}</strong> mood</p>
+  </div>
+
+  <div class="movies-grid" id="movies-grid">
+    {% for movie in movies %}
+    <div class="movie-card glass-card" style="--em-color: {{ meta.color }}" data-title="{{ movie.title }}">
+      <div class="movie-poster-wrap">
+        <img class="movie-poster"
+             src="{{ movie.poster }}"
+             alt="{{ movie.title }} poster"
+             loading="lazy"
+             onerror="this.src='https://via.placeholder.com/300x450/1a1a2e/ffffff?text={{ movie.title | urlencode }}'"/>
+        <div class="poster-overlay">
+          <div class="poster-rating">⭐ {{ movie.rating }}</div>
+        </div>
+      </div>
+
+      <div class="movie-info">
+        <h3 class="movie-title">{{ movie.title }}</h3>
+        <div class="movie-meta">
+          <span class="movie-genre">{{ movie.genre }}</span>
+          <span class="movie-year">{{ movie.year }}</span>
+        </div>
+        <p class="movie-desc">{{ movie.description }}</p>
+        <div class="movie-footer">
+          <div class="star-rating">
+            {% set stars = (movie.rating / 2) | round(0, 'floor') | int %}
+            {% for i in range(5) %}
+              {% if i < stars %}⭐{% else %}☆{% endif %}
+            {% endfor %}
+            <span class="rating-num">{{ movie.rating }}/10</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Other Mood Tabs -->
+<section class="other-moods-section">
+  <div class="section-header">
+    <h2 class="section-title">✨ Explore Other Moods</h2>
+  </div>
+  <div class="other-moods-row">
+    {% for em in other_emotions %}
+    {% set m = emotion_meta.get(em, {}) %}
+    <a href="{{ url_for('recommend', emotion=em) }}"
+       class="mood-tab {% if em == emotion %}mood-tab-active{% endif %}"
+       style="--em-color: {{ m.get('color', '#999') }}">
+      <span>{{ m.get('icon', '🎭') }}</span>
+      {{ m.get('label', em.title()) }}
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
