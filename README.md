@@ -150,6 +150,23 @@ Since the app is configured to run on `0.0.0.0`, you can access it from your pho
 
 ---
 
+## 🚀 Deployment to Render (Recommended Alternative)
+
+Since AWS Lambda has a strict 500MB limit, we recommend **Render.com** for free, easy deployment:
+
+1.  **Create a Render Account**: Go to [Render.com](https://render.com) and sign up with your GitHub.
+2.  **New Web Service**: Click **New +** > **Web Service**.
+3.  **Connect GitHub**: Select your `MoodFlick` repository.
+4.  **Settings**:
+    - **Runtime**: `Python 3`
+    - **Build Command**: `pip install -r requirements.txt`
+    - **Start Command**: `gunicorn app:app`
+5.  **Environment Variables**:
+    - Add `SECRET_KEY` = `your_random_secret_here`
+6.  **Deploy**: Render will automatically build and host your app.
+
+---
+
 - FER Library – https://github.com/justinshenk/fer
 - TensorFlow / Keras – https://www.tensorflow.org
 - OpenCV – https://opencv.org
