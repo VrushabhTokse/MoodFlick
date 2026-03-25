@@ -160,7 +160,7 @@ Since AWS Lambda has a strict 500MB limit, we recommend **Render.com** for free,
 4.  **Settings**:
     - **Runtime**: `Python 3`
     - **Build Command**: `pip install -r requirements.txt`
-    - **Start Command**: `gunicorn app:app`
+    - **Start Command**: `gunicorn app:app`  <-- [IMPORTANT: DO NOT USE MoodFlick.wsgi]
 5.  **Environment Variables**:
     - Add `SECRET_KEY` = `your_random_secret_here`
 6.  **Deploy**: Render will automatically build and host your app.
