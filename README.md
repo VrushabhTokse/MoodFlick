@@ -150,20 +150,20 @@ Since the app is configured to run on `0.0.0.0`, you can access it from your pho
 
 ---
 
-## 🚀 Deployment to Render (Recommended Alternative)
+## 🚀 Deployment to Hugging Face Spaces (Best for 10GB+ ML)
 
-Since AWS Lambda has a strict 500MB limit, we recommend **Render.com** for free, easy deployment:
+If your project is too large (9GB+) for Render or Lambda, use **Hugging Face Spaces**. It is designed for ML projects and has much larger storage limits:
 
-1.  **Create a Render Account**: Go to [Render.com](https://render.com) and sign up with your GitHub.
-2.  **New Web Service**: Click **New +** > **Web Service**.
-3.  **Connect GitHub**: Select your `MoodFlick` repository.
-4.  **Settings**:
-    - **Runtime**: `Python 3`
-    - **Build Command**: `pip install -r requirements.txt`
-    - **Start Command**: `gunicorn app:app`  <-- [IMPORTANT: DO NOT USE MoodFlick.wsgi]
-5.  **Environment Variables**:
-    - Add `SECRET_KEY` = `your_random_secret_here`
-6.  **Deploy**: Render will automatically build and host your app.
+1.  **Create a Hugging Face Account**: Go to [huggingface.co](https://huggingface.co).
+2.  **New Space**: Click **New** > **Space**.
+3.  **Settings**:
+    - **Space Name**: `MoodFlick`
+    - **SDK**: **Docker** (Blank template)
+    - **Public/Private**: Your choice.
+4.  **Connect GitHub**:
+    - Select **"Sync from GitHub"** or upload your files manually.
+5.  **Build**: Hugging Face will automatically see your `Dockerfile`, build the 10GB environment, and host your Flask app!
+6.  **Port**: The app is pre-configured to run on port `7860` for Hugging Face compatibility.
 
 ---
 
